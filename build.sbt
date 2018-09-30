@@ -11,7 +11,18 @@ def pbSettings(grpc: Boolean) = Seq(
   libraryDependencies += "com.thesamet.scalapb" %% "scalapb-runtime" % scalapb.compiler.Version.scalapbVersion % "protobuf"
 )
 
-def create(id: String, grpc :Boolean) = Project(id = id, base = file(s".$id")).settings(name := id, scalaSettings, pbSettings(grpc))
+def sonatypeSettings(name: String) = Seq(
+  useGpg := false,
+  pgpPassphrase := sys.env.get("PGP_PASSPHRASE").map(_.toCharArray),
+  publishTo := sonatypePublishTo.value,
+  credentials += Credentials("Sonatype Nexus Repository Manager", "oss.sonatype.org", sys.env.getOrElse("SONATYPE_USER", ""), sys.env.getOrElse("SONATYPE_PASS", "")),
+  sonatypeProfileName := "com.github.nokamoto",
+  publishMavenStyle := true,
+  sonatypeProjectHosting := Some(xerial.sbt.Sonatype.GitHubHosting("nokamoto", name, "nokamoto.engr@gmail.com")),
+  scmInfo := Some(ScmInfo(url("https://github.com/nokamoto/webpush-protobuf-scala"), "scm:git@github.com:nokamoto/webpush-protobuf-scala.git"))
+)
+
+def create(id: String, grpc :Boolean) = Project(id = id, base = file(s".$id")).settings(name := id, scalaSettings, pbSettings(grpc), sonatypeSettings(id))
 
 lazy val protobuf = create(id = "webpush-protobuf", grpc = false)
 
