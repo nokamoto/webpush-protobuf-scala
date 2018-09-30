@@ -21,6 +21,12 @@ jobs:
           command: sbt scalafmt::test test:scalafmt::test sbt:scalafmt::test
       - run:
           command: sbt webpush-protobuf/compile webpush-protobuf-grpc/compile
+      - run:
+          name: sbt publishSigned
+          command: |
+            mkdir -p ~/.sbt/gpg
+            echo $GPG_SECRET_KEY | base64 --decode > ~/.sbt/gpg/secring.asc
+            sbt webpush-protobuf/publishSigned webpush-protobuf-grpc/publishSigned
       - save_cache:
           key: sbt-cache
           paths:
