@@ -1,4 +1,4 @@
-addSbtPlugin("com.lucidchart" % "sbt-scalafmt" % "1.15")
+addSbtPlugin("com.geirsson" % "sbt-scalafmt" % "1.5.1")
 
 addSbtPlugin("com.thesamet" % "sbt-protoc" % "0.99.18")
 

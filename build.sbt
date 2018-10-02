@@ -6,8 +6,10 @@ lazy val scalaSettings = Seq(
 
 def pbSettings(grpc: Boolean) = Seq(
   PB.protoSources in Compile := (file("webpush-protobuf/webpush/protobuf").getCanonicalFile * AllPassFilter).get,
-  PB.includePaths in Compile := Seq(file("webpush-protobuf").getCanonicalFile, target.value / "protobuf_external"),
-  PB.targets in Compile := Seq(scalapb.gen(grpc = grpc, flatPackage = true) -> (sourceManaged in Compile).value),
+  PB.includePaths in Compile := Seq(file("webpush-protobuf").getCanonicalFile,
+                                    target.value / "protobuf_external"),
+  PB.targets in Compile := Seq(scalapb
+    .gen(grpc = grpc, flatPackage = true) -> (sourceManaged in Compile).value),
   libraryDependencies += "com.thesamet.scalapb" %% "scalapb-runtime" % scalapb.compiler.Version.scalapbVersion % "protobuf"
 )
 
@@ -15,15 +17,28 @@ def sonatypeSettings(name: String) = Seq(
   useGpg := false,
   pgpPassphrase := sys.env.get("PGP_PASSPHRASE").map(_.toCharArray),
   publishTo := sonatypePublishTo.value,
-  credentials += Credentials("Sonatype Nexus Repository Manager", "oss.sonatype.org", sys.env.getOrElse("SONATYPE_USER", ""), sys.env.getOrElse("SONATYPE_PASS", "")),
+  credentials += Credentials("Sonatype Nexus Repository Manager",
+                             "oss.sonatype.org",
+                             sys.env.getOrElse("SONATYPE_USER", ""),
+                             sys.env.getOrElse("SONATYPE_PASS", "")),
   sonatypeProfileName := "com.github.nokamoto",
   publishMavenStyle := true,
-  sonatypeProjectHosting := Some(xerial.sbt.Sonatype.GitHubHosting("nokamoto", name, "nokamoto.engr@gmail.com")),
-  scmInfo := Some(ScmInfo(url("https://github.com/nokamoto/webpush-protobuf-scala"), "scm:git@github.com:nokamoto/webpush-protobuf-scala.git"))
+  sonatypeProjectHosting := Some(
+    xerial.sbt.Sonatype
+      .GitHubHosting("nokamoto", name, "nokamoto.engr@gmail.com")),
+  scmInfo := Some(
+    ScmInfo(url("https://github.com/nokamoto/webpush-protobuf-scala"),
+            "scm:git@github.com:nokamoto/webpush-protobuf-scala.git"))
 )
 
-def create(id: String, grpc :Boolean) = Project(id = id, base = file(s".$id")).settings(name := id, scalaSettings, pbSettings(grpc), sonatypeSettings(id))
+def create(id: String, grpc: Boolean) =
+  Project(id = id, base = file(s".$id"))
+    .settings(name := id, scalaSettings, pbSettings(grpc), sonatypeSettings(id))
 
 lazy val protobuf = create(id = "webpush-protobuf", grpc = false)
 
-lazy val grpc = create(id = "webpush-protobuf-grpc", grpc = true).settings(libraryDependencies ++= Seq("io.grpc" % "grpc-netty" % scalapb.compiler.Version.grpcJavaVersion, "com.thesamet.scalapb" %% "scalapb-runtime-grpc" % scalapb.compiler.Version.scalapbVersion))
+lazy val grpc = create(id = "webpush-protobuf-grpc", grpc = true).settings(
+  libraryDependencies ++= Seq(
+    "io.grpc" % "grpc-netty" % scalapb.compiler.Version.grpcJavaVersion,
+    "com.thesamet.scalapb" %% "scalapb-runtime-grpc" % scalapb.compiler.Version.scalapbVersion
+  ))
