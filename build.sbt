@@ -1,7 +1,7 @@
 lazy val scalaSettings = Seq(
   scalaVersion := "2.12.6",
   organization := "com.github.nokamoto",
-  version := "0.0.0",
+  version := "0.0.1-SNAPSHOT",
   licenses := Seq(
     "MIT License" -> url("http://www.opensource.org/licenses/mit-license")),
 )
