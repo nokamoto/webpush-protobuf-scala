@@ -1,7 +1,9 @@
 lazy val scalaSettings = Seq(
   scalaVersion := "2.12.6",
   organization := "com.github.nokamoto",
-  version := "0.0.0-SNAPSHOT",
+  version := "0.0.0",
+  licenses := Seq(
+    "MIT License" -> url("http://www.opensource.org/licenses/mit-license")),
 )
 
 def pbSettings(grpc: Boolean) = Seq(
@@ -28,7 +30,8 @@ def sonatypeSettings(name: String) = Seq(
       .GitHubHosting("nokamoto", name, "nokamoto.engr@gmail.com")),
   scmInfo := Some(
     ScmInfo(url("https://github.com/nokamoto/webpush-protobuf-scala"),
-            "scm:git@github.com:nokamoto/webpush-protobuf-scala.git"))
+            "scm:git@github.com:nokamoto/webpush-protobuf-scala.git")),
+  publishConfiguration := publishConfiguration.value.withOverwrite(true)
 )
 
 def create(id: String, grpc: Boolean) =
